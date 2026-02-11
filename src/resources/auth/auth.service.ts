@@ -31,7 +31,7 @@ class AuthService {
     companyName,
     designation,
     profilePhoto?: Express.Multer.File,
-    coverPhoto?: Express.Multer.File
+    coverPhoto?: Express.Multer.File,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       const username = email.split("@")[0];
@@ -52,7 +52,7 @@ class AuthService {
         await renameUploadedFile(
           profilePhotoFileame,
           newProfilePhotoFileame,
-          profilePhotoDestination
+          profilePhotoDestination,
         );
         profileUrl = `${profilePhotoDestination}/${newProfilePhotoFileame}`;
       }
@@ -66,7 +66,7 @@ class AuthService {
         await renameUploadedFile(
           coverPhotoFileame,
           newCoverPhotoFileame,
-          coverPhotoDestination
+          coverPhotoDestination,
         );
         coverUrl = `${coverPhotoDestination}/${newCoverPhotoFileame}`;
       }
@@ -104,7 +104,7 @@ class AuthService {
           "Welcome to Wond3r Card",
           template,
           "Welcome",
-          emailData
+          emailData,
         );
         console.log("Welcome email sent successfully!");
       } catch (mailError) {
@@ -121,7 +121,7 @@ class AuthService {
         throw new HttpException(
           409,
           "error",
-          `Duplicate ${duplicateField}: ${duplicateValue} is already existed.`
+          `Duplicate ${duplicateField}: ${duplicateValue} is already existed.`,
         );
       } else {
         throw new HttpException(440, "error", `Unable to sign up ${error}`);
@@ -143,21 +143,21 @@ class AuthService {
       await user.deleteOne();
 
       logger.info(
-        `User with email ${user.email} and all related data were deleted.`
+        `User with email ${user.email} and all related data were deleted.`,
       );
     } catch (error) {
       console.error(`Failed to delete user: ${error}`);
       throw new HttpException(
         400,
         "error",
-        "Failed to delete account and related data"
+        "Failed to delete account and related data",
       );
     }
   }
 
   public async signIn(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       const user = await this.user.findOne({ email });
@@ -182,13 +182,13 @@ class AuthService {
       throw new HttpException(
         400,
         "error",
-        `Couldn't sign in: ${error.message}`
+        `Couldn't sign in: ${error.message}`,
       );
     }
   }
 
   public async refreshTokens(
-    refreshToken: string
+    refreshToken: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       const decoded = await token.verifyRefreshToken(refreshToken);
@@ -199,7 +199,7 @@ class AuthService {
       const newAccessToken = await token.createToken(user, tokenSession);
       const newRefreshToken = await token.createRefreshToken(
         user,
-        refreshSession
+        refreshSession,
       );
 
       return { accessToken: newAccessToken, refreshToken: newRefreshToken };
@@ -211,7 +211,7 @@ class AuthService {
 
   public async sendVerificationOTP(
     user: User,
-    firstName: string
+    firstName: string,
   ): Promise<void | Error> {
     try {
       //
@@ -231,19 +231,19 @@ class AuthService {
         "Account Verification",
         template,
         "Verification",
-        emailData
+        emailData,
       );
     } catch (error) {
       throw new HttpException(
         401,
         "sendVerificationOTP",
-        `sendVerificationOTP: ${error}`
+        `sendVerificationOTP: ${error}`,
       );
     }
   }
 
   public async sendAccountVerificationOTP(
-    email: string
+    email: string,
   ): Promise<String | Error> {
     try {
       let error = "";
@@ -276,13 +276,13 @@ class AuthService {
         "Account Verification",
         template,
         "Verification",
-        emailData
+        emailData,
       );
     } catch (error) {
       throw new HttpException(
         401,
         "sendVerificationOTP",
-        `sendAccountVerificationOTP: ${error}`
+        `sendAccountVerificationOTP: ${error}`,
       );
     }
   }
@@ -323,20 +323,20 @@ class AuthService {
         "Forgot Password Verification",
         template,
         "Verification",
-        emailData
+        emailData,
       );
     } catch (error) {
       throw new HttpException(
         401,
         "error",
-        `Could not send verification OTP ${error}`
+        `Could not send verification OTP ${error}`,
       );
     }
   }
 
   public async verifyAccountOTP(
     email: string,
-    otpCode: string
+    otpCode: string,
   ): Promise<string | Error> {
     try {
       const user = await userModel.findOne({ email: email });
@@ -344,7 +344,7 @@ class AuthService {
         throw new HttpException(
           400,
           "not found",
-          "User account could not be found"
+          "User account could not be found",
         );
       }
 
@@ -357,7 +357,7 @@ class AuthService {
         throw new HttpException(
           400,
           "otp_expired",
-          "OTP Code expired or invalid"
+          "OTP Code expired or invalid",
         );
       }
 
@@ -375,13 +375,13 @@ class AuthService {
           "Account Already Verified",
           template,
           "Others",
-          emailData
+          emailData,
         );
 
         throw new HttpException(
           400,
           "already_verified",
-          "Account Already Verified"
+          "Account Already Verified",
         );
       } else {
         console.log(`User account verified: ${user.isVerified}`);
@@ -402,7 +402,7 @@ class AuthService {
           "Account Verification",
           template,
           "Verification",
-          emailData
+          emailData,
         );
 
         return "Account successfully verified";
@@ -411,14 +411,14 @@ class AuthService {
       throw new HttpException(
         401,
         "error",
-        error.message || "Could not verify OTP"
+        error.message || "Could not verify OTP",
       );
     }
   }
 
   public async verifyOTP(
     email: string,
-    otpCode: string
+    otpCode: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     try {
       const user = await this.user.findOne({ email: email });
@@ -426,7 +426,7 @@ class AuthService {
         throw new HttpException(
           419,
           "419",
-          "419: please check your credentials"
+          "419: please check your credentials",
         );
       }
       const uid = user.id;
@@ -436,7 +436,7 @@ class AuthService {
         throw new HttpException(
           400,
           "otp_expired",
-          "OTP Code expired or invalid"
+          "OTP Code expired or invalid",
         );
       }
 
@@ -453,7 +453,7 @@ class AuthService {
 
   public async changePassword(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ accessToken: string; refreshToken: string } | Error> {
     try {
       const user = await this.user.findOne({ email });
@@ -470,10 +470,10 @@ class AuthService {
       const accessToken = await token.createToken(user, tokenSession);
       const refreshToken = await token.createRefreshToken(user, refreshSession);
 
-      user.password = newPassword;
-      user.refreshToken = refreshToken;
-
-      await user.save();
+      await user.updateOne({
+        password: newPassword,
+        refreshToken: refreshToken,
+      });
       const uid = user.id;
 
       const profile = await profileModel.findOne({ uid });
@@ -491,7 +491,7 @@ class AuthService {
         "Password Changed Successfully",
         template,
         "Success",
-        emailData
+        emailData,
       );
       return { accessToken, refreshToken };
     } catch (error) {
@@ -520,7 +520,7 @@ class AuthService {
         "Your OTP Code for Enabling Two-Factor Authentication",
         template,
         "security",
-        emailData
+        emailData,
       );
     } catch (error) {
       throw new HttpException(400, "2fa failed", "unable to setup 2fa");
@@ -535,7 +535,7 @@ class AuthService {
         throw new HttpException(
           400,
           "otp_expired",
-          "OTP Code expired or invalid"
+          "OTP Code expired or invalid",
         );
       }
 
@@ -557,13 +557,13 @@ class AuthService {
         "Two-Factor Authentication Enabled (2FA)",
         template,
         "security",
-        emailData
+        emailData,
       );
     } catch (error) {
       throw new HttpException(
         400,
         "2fa failed",
-        `unable to setup 2fa ${error}`
+        `unable to setup 2fa ${error}`,
       );
     }
   }
@@ -592,7 +592,7 @@ class AuthService {
       throw new HttpException(
         401,
         "error",
-        "Multi-Factor Authentication is not enable for this user"
+        "Multi-Factor Authentication is not enable for this user",
       );
     }
 
@@ -660,13 +660,13 @@ class AuthService {
         "2FA OTP Code",
         template,
         "Verification",
-        emailData
+        emailData,
       );
 
       throw new HttpException(
         400,
         "2fa_enabled",
-        "Two Factor Authentication Enabled. Please provide OTP"
+        "Two Factor Authentication Enabled. Please provide OTP",
       );
     }
 
@@ -675,7 +675,7 @@ class AuthService {
       throw new HttpException(
         400,
         "otp_expired",
-        "OTP Code expired or invalid"
+        "OTP Code expired or invalid",
       );
     }
   }
@@ -685,7 +685,7 @@ class AuthService {
       throw new HttpException(
         400,
         "hasEnabledMFA",
-        "Multi-Factor Authentication Enabled. Invalid Multi Factor Authentication (MFA) code"
+        "Multi-Factor Authentication Enabled. Invalid Multi Factor Authentication (MFA) code",
       );
     }
     const verified = speakeasy.totp.verify({
@@ -698,7 +698,7 @@ class AuthService {
       throw new HttpException(
         400,
         "hasEnabledMFA",
-        "Invalid Multi Factor Authentication (MFA) code"
+        "Invalid Multi Factor Authentication (MFA) code",
       );
     }
   }
