@@ -272,7 +272,7 @@ class App {
 
   public listen() {
     const server = this.express.listen(this.port, () => {
-      log.info(`Live on https://wond3rd-card-apis-q7hk5.ondigitalocean.app/`);
+      log.info(`Live on https://wond3rcard-backend-rgmx.onrender.com/`);
       log.info(`App is listening on localhost:${this.port}`);
     });
     return server;

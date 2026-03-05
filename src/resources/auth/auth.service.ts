@@ -113,6 +113,13 @@ class AuthService {
 
       await this.sendVerificationOTP(user, firstName);
 
+      //this is for testing the email verification
+      // try {
+      //   await this.sendVerificationOTP(user, firstName);
+      // } catch (err) {
+      //   console.error("Failed to send verification OTP (dev only):", err);
+      // }
+
       return { accessToken, refreshToken };
     } catch (error) {
       if (error.code === 11000) {
@@ -305,7 +312,7 @@ class AuthService {
       const otp = await this.otpService.saveOtp(uid);
 
       const NODE_ENV = process.env.NODE_ENV;
-      const liveUrl = "https://wond3rd-card-apis-q7hk5.ondigitalocean.app/api/";
+      const liveUrl = "https://wond3rcard-backend-rgmx.onrender.com/api/";
       const live = `${liveUrl}/auth/verify-otp?code=${otp}`;
       const local = `http://localhost:3000/api/auth/verify-otp?code=${otp}`;
       const resetLink = NODE_ENV === "production" ? live : local;
