@@ -285,7 +285,7 @@ class PaystackSubscriptionService {
                 plan: existingSub.plan,
                 next_payment_date: existingSub.next_payment_date,
                 customer: existingSub.customer,
-                callback_url: `${process.env.FRONTEND_BASE_URL}/payment-success?reference=${existingSub.subscription_code}`,
+                callback_url: `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success?reference=${existingSub.subscription_code}`,
               },
             };
           }
@@ -297,7 +297,7 @@ class PaystackSubscriptionService {
               customer: customerCode,
               plan: paystackPlanCode,
               authorization: savedAuthorization,
-              callback_url: `${process.env.FRONTEND_BASE_URL}/payment-success`,
+              callback_url: `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success`,
               metadata: {
                 userId,
                 plan,
@@ -348,7 +348,7 @@ class PaystackSubscriptionService {
           }
 
           // Update callback URL with subscription code after getting response
-          newSub.callback_url = `${process.env.FRONTEND_BASE_URL}/payment-success?reference=${newSub.subscription_code}`;
+          newSub.callback_url = `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success?reference=${newSub.subscription_code}`;
 
           return {
             type: "subscription" as const,
@@ -399,11 +399,11 @@ class PaystackSubscriptionService {
                 foundUserSub: !!userSub,
                 userSubDetails: userSub
                   ? {
-                      code: userSub.subscription_code,
-                      status: userSub.status,
-                      customerCode: userSub.customer?.customer_code,
-                      email: userSub.customer?.email,
-                    }
+                    code: userSub.subscription_code,
+                    status: userSub.status,
+                    customerCode: userSub.customer?.customer_code,
+                    email: userSub.customer?.email,
+                  }
                   : null,
               });
 
@@ -452,7 +452,7 @@ class PaystackSubscriptionService {
                     plan: userSub.plan,
                     next_payment_date: userSub.next_payment_date,
                     customer: userSub.customer,
-                    callback_url: `${process.env.FRONTEND_BASE_URL}/payment-success?reference=${userSub.subscription_code}`,
+                    callback_url: `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success?reference=${userSub.subscription_code}`,
                   },
                 };
               }
@@ -485,7 +485,7 @@ class PaystackSubscriptionService {
           {
             email: user.email,
             amount: amount,
-            callback_url: `${process.env.FRONTEND_BASE_URL}/payment-success`,
+            callback_url: `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success`,
             metadata: {
               userId,
               plan,
@@ -509,7 +509,7 @@ class PaystackSubscriptionService {
         }
 
         // Update callback URL with reference after getting response
-        transactionResponse.data.data.callback_url = `${process.env.FRONTEND_BASE_URL}/payment-success?reference=${transactionResponse.data.data.reference}`;
+        transactionResponse.data.data.callback_url = `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success?reference=${transactionResponse.data.data.reference}`;
 
         return {
           type: "payment" as const,
@@ -625,7 +625,7 @@ class PaystackSubscriptionService {
           customer: data.customer.customer_code,
           plan: paystackPlanCode,
           authorization: data.authorization.authorization_code,
-          callback_url: `${process.env.FRONTEND_BASE_URL}/payment-success?reference=${data.reference}`,
+          callback_url: `https://wonder-card-web-app-react.vercel.app/paystack/subscription/success?reference=${data.reference}`,
           metadata: {
             userId,
             plan,
@@ -799,10 +799,10 @@ class PaystackSubscriptionService {
             foundUserSub: !!userSub,
             userSubDetails: userSub
               ? {
-                  code: userSub.subscription_code,
-                  status: userSub.status,
-                  email: userSub.customer?.email,
-                }
+                code: userSub.subscription_code,
+                status: userSub.status,
+                email: userSub.customer?.email,
+              }
               : null,
           });
 
@@ -1001,10 +1001,10 @@ class PaystackSubscriptionService {
             foundUserSub: !!userSub,
             userSubDetails: userSub
               ? {
-                  code: userSub.subscription_code,
-                  status: userSub.status,
-                  email: userSub.customer?.email,
-                }
+                code: userSub.subscription_code,
+                status: userSub.status,
+                email: userSub.customer?.email,
+              }
               : null,
           });
 
