@@ -69,9 +69,6 @@ docker-compose.override.yml
 
 # Misc
 .npm/
-yarn.lock
-package-lock.json
-pnpm-lock.yaml
 
 # Optional: Ignore specific secrets or config files
 secrets.json
