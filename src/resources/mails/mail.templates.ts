@@ -1,5 +1,5 @@
 const MailTemplates = {
-  welcomeTemplate: /*html*/ `
+    welcomeTemplate: /*html*/ `
 <!DOCTYPE html>
 <html>
 <head>
@@ -103,7 +103,7 @@ const MailTemplates = {
 </html>
 `,
 
-  subscriptionConfirmation: /*html*/ `<!DOCTYPE html>
+    subscriptionConfirmation: /*html*/ `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -302,7 +302,7 @@ const MailTemplates = {
 </html>
 `,
 
-  subscriptionCancelled: /*html*/ `<!DOCTYPE html>
+    subscriptionCancelled: /*html*/ `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -502,7 +502,7 @@ const MailTemplates = {
 </html>
 `,
 
-  physicalCardOrderConfirmation: /*html*/ `<!DOCTYPE html>
+    physicalCardOrderConfirmation: /*html*/ `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -628,7 +628,7 @@ const MailTemplates = {
 </body>
 </html>`,
 
-  setup2faConfirmation: /*html*/ `<!DOCTYPE html>
+    setup2faConfirmation: /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -642,7 +642,7 @@ const MailTemplates = {
 </html>
 `,
 
-  setupmfaConfrimation: /*html*/ `<!DOCTYPE html>
+    setupmfaConfrimation: /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -655,7 +655,7 @@ const MailTemplates = {
 </body>
 </html>
 `,
-  passwordResetRequest: /*html*/ `<!DOCTYPE html>
+    passwordResetRequest: /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -672,7 +672,7 @@ const MailTemplates = {
 </html>
 `,
 
-  otpVerification: /*html*/ `<!DOCTYPE html>
+    otpVerification: /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -690,7 +690,131 @@ const MailTemplates = {
 </html>
 `,
 
-  signUpWelcome: /*html*/ `<!DOCTYPE html>
+    welcomeWithOtp: /*html*/ `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to WOND3R CARD</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(109, 65, 202, 0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #6d41ca 0%, #8b5cf6 100%);
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .content {
+            padding: 40px 32px;
+            text-align: center;
+        }
+        h2 {
+            color: #1a1a2e;
+            font-size: 24px;
+            margin: 0 0 16px 0;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.7;
+            margin: 0 0 16px 0;
+        }
+        .otp-container {
+            background-color: #f8f9fa;
+            border: 2px dashed #6d41ca;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .otp-label {
+            font-size: 14px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 8px 0;
+        }
+        .otp-code {
+            font-size: 32px;
+            font-weight: 700;
+            color: #6d41ca;
+            letter-spacing: 6px;
+            margin: 0;
+        }
+        .otp-expiry {
+            font-size: 13px;
+            color: #a0aec0;
+            margin: 12px 0 0 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer p {
+            font-size: 14px;
+            color: #718096;
+            margin: 0 0 8px 0;
+        }
+        .footer a {
+            color: #6d41ca;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>WOND3R CARD</h1>
+            </div>
+            <div class="content">
+                <h2>Welcome, {{userName}}!</h2>
+                <p>Thank you for signing up! We're thrilled to have you on board.</p>
+                <p>To get started, please verify your account using the code below:</p>
+                <div class="otp-container">
+                    <p class="otp-label">Your Verification Code</p>
+                    <p class="otp-code">{{otpCode}}</p>
+                    <p class="otp-expiry">This code is valid for 60 minutes</p>
+                </div>
+                <p>Start exploring all the benefits of WOND3R CARD and enjoy an amazing experience.</p>
+            </div>
+            <div class="footer">
+                <p>If you didn't create this account, please ignore this email.</p>
+                <p>If you have any questions, feel free to <a href="mailto:support@wond3rcard.com">contact us</a>.</p>
+                <p>— The WOND3R CARD Team</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+`,
+
+    signUpWelcome: /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -704,7 +828,7 @@ const MailTemplates = {
 </body>
 </html>
 `,
-  signInNotification: /*html*/ `<!DOCTYPE html>
+    signInNotification: /*html*/ `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -719,7 +843,7 @@ const MailTemplates = {
 </html>
 `,
 
-  accountAlreadyVerified: /*html*/ `
+    accountAlreadyVerified: /*html*/ `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -744,7 +868,7 @@ const MailTemplates = {
 </html>
 `,
 
-  passwordChangedSuccessfully: `
+    passwordChangedSuccessfully: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -788,7 +912,7 @@ const MailTemplates = {
 </html>
 `,
 
-  accountVerified: `
+    accountVerified: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -831,7 +955,7 @@ const MailTemplates = {
 </body>
 </html>
 `,
-  githubMailMergeNotification: `
+    githubMailMergeNotification: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -904,7 +1028,7 @@ const MailTemplates = {
 </html>
 `,
 
-  request2FA: `<!DOCTYPE html>
+    request2FA: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -998,7 +1122,7 @@ const MailTemplates = {
 </html>
 `,
 
-  enable2FA: `<!DOCTYPE html>
+    enable2FA: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1081,7 +1205,7 @@ const MailTemplates = {
 </html>
 `,
 
-  otpCode: `
+    otpCode: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1172,7 +1296,7 @@ const MailTemplates = {
 </html>
 `,
 
-  global2FAEnabled: `<!DOCTYPE html>
+    global2FAEnabled: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

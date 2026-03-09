@@ -91,34 +91,28 @@ class AuthService {
         coverUrl: coverUrl,
       });
 
+      const otp = await this.otpService.saveOtp(user.id);
+
       const emailData = {
         userName: firstName,
+        otpCode: otp,
       };
 
-      const template = MailTemplates.welcomeTemplate;
+      const template = MailTemplates.welcomeWithOtp;
 
       try {
-        console.log("Attempting to send welcome email...");
+        console.log("Attempting to send welcome + OTP email...");
         await this.mailer.sendMail(
           email,
-          "Welcome to Wond3r Card",
+          "Welcome to Wond3r Card — Verify Your Account",
           template,
           "Welcome",
           emailData,
         );
-        console.log("Welcome email sent successfully!");
+        console.log("Welcome + OTP email sent successfully!");
       } catch (mailError) {
-        console.error("Error sending welcome email:", mailError);
+        console.error("Error sending welcome + OTP email:", mailError);
       }
-
-      await this.sendVerificationOTP(user, firstName);
-
-      //this is for testing the email verification
-      // try {
-      //   await this.sendVerificationOTP(user, firstName);
-      // } catch (err) {
-      //   console.error("Failed to send verification OTP (dev only):", err);
-      // }
 
       return { accessToken, refreshToken };
     } catch (error) {
