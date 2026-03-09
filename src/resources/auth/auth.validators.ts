@@ -13,10 +13,20 @@ const validateSignUp = Joi.object({
         "Phone number must be in international format, e.g., +1234567890",
     }),
   password: Joi.string()
+    .min(8)
+    .max(128)
     .pattern(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      new RegExp(
+        "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:'\",<>,./?])"
+      )
     )
-    .required(),
+    .required()
+    .messages({
+      "string.min": "Password must be at least 8 characters long.",
+      "string.max": "Password must not exceed 128 characters.",
+      "string.pattern.base":
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+    }),
   fcmToken: Joi.string().required(),
   companyName: Joi.string().allow(""),
   designation: Joi.string().allow(""),
@@ -25,10 +35,20 @@ const validateSignUp = Joi.object({
 const validateSignIn = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string()
+    .min(8)
+    .max(128)
     .pattern(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      new RegExp(
+        "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:'\",<>,./?])"
+      )
     )
-    .required(),
+    .required()
+    .messages({
+      "string.min": "Password must be at least 8 characters long.",
+      "string.max": "Password must not exceed 128 characters.",
+      "string.pattern.base":
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+    }),
   otpCode: Joi.string().allow(""),
   mfaCode: Joi.string().allow(""),
 });
@@ -61,10 +81,20 @@ const validateOTPCode = Joi.object({
 
 const validatePassword = Joi.object({
   password: Joi.string()
+    .min(8)
+    .max(128)
     .pattern(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      new RegExp(
+        "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:'\",<>,./?])"
+      )
     )
-    .required(),
+    .required()
+    .messages({
+      "string.min": "Password must be at least 8 characters long.",
+      "string.max": "Password must not exceed 128 characters.",
+      "string.pattern.base":
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+    }),
 });
 
 export const validateChangePasswordReset = Joi.object({
