@@ -32,6 +32,8 @@ interface User extends Document {
   userStatus: UserStatus;
   isSoftDeleted: boolean;
   isVerified: boolean;
+  failedLoginAttempts: number;
+  lockUntil: Date | null;
   refreshToken: string;
   userTier: {
     plan: UserTiers;

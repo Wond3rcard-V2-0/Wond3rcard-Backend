@@ -7,6 +7,7 @@ import GeneralController from "../../protocols/global.controller";
 import { uploadProfileAndCoverMiddleware } from "../../middlewares/uploaders/uploadProfileAndCover";
 import AuthService from "./auth.service";
 import validate from "./auth.validators";
+import { signInRateLimiter, forgotPasswordRateLimiter } from "../../middlewares/authRateLimiter";
 
 class AuthController implements GeneralController {
   public path = "/auth";
@@ -166,9 +167,12 @@ class AuthController implements GeneralController {
      *     responses:
      *       200:
      *         description: Sign-in successful
+     *       429:
+     *         description: Too many login attempts from this IP
      */
     this.router.post(
       `${this.path}/sign-in`,
+      signInRateLimiter,
       validationMiddleware(validate.validateSignIn),
       this.signIn
     );
@@ -216,9 +220,12 @@ class AuthController implements GeneralController {
      *     responses:
      *       201:
      *         description: OTP sent
+     *       429:
+     *         description: Too many request attempts from this IP
      */
     this.router.post(
       `${this.path}/forgot-password`,
+      forgotPasswordRateLimiter,
       validationMiddleware(validate.validateDeleteAccount),
       this.forgotPassword
     );
@@ -629,7 +636,7 @@ class AuthController implements GeneralController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Response | void => {};
+  ): Response | void => { };
 
   private request2FA = async (
     req: Request,

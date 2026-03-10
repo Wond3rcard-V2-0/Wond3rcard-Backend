@@ -104,7 +104,7 @@ class AuthService {
         console.log("Attempting to send welcome + OTP email...");
         await this.mailer.sendMail(
           email,
-          "Welcome to Wond3r Card — Verify Your Account",
+          "Welcome to Wond3rCard, Kindly Verify Your Account",
           template,
           "Welcome",
           emailData,
@@ -167,10 +167,40 @@ class AuthService {
         throw new HttpException(404, "not_found", "User not found");
       }
 
+      // Check if account is locked
+      if (user.lockUntil && user.lockUntil > new Date()) {
+        const timeRemaining = Math.ceil(
+          (user.lockUntil.getTime() - new Date().getTime()) / 60000,
+        );
+        throw new HttpException(
+          423,
+          "error",
+          `Account locked due to too many failed login attempts. Try again after ${timeRemaining} minutes`,
+        );
+      }
+
       // Validate password
       if (!(await user.isValidPassword(password))) {
+        // Increment failed login attempts
+        user.failedLoginAttempts += 1;
+        if (user.failedLoginAttempts >= 5) {
+          // Lock account for 15 minutes
+          user.lockUntil = new Date(Date.now() + 15 * 60 * 1000);
+          await user.save();
+          throw new HttpException(
+            423,
+            "error",
+            "Account locked due to too many failed login attempts. Try again after 15 minutes",
+          );
+        }
+        await user.save();
         throw new HttpException(400, "error", "Invalid login credentials");
       }
+
+      // Successful login - reset tracking fields
+      user.failedLoginAttempts = 0;
+      user.lockUntil = null;
+      await user.save();
 
       // Generate access & refresh tokens
       const tokenSession = token.generateSessionId();
