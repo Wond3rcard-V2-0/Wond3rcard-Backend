@@ -70,6 +70,15 @@ class CardController implements GlobalController {
      *               cardVideo:
      *                 type: string
      *                 format: binary
+     *               cardName:
+     *                 type: string
+     *                 example: "My Business Card"
+     *               firstName:
+     *                 type: string
+     *                 example: "John"
+     *               lastName:
+     *                 type: string
+     *                 example: "Doe"
      *               socialMediaLinks:
      *                 type: string
      *                 description: >
@@ -1393,9 +1402,8 @@ class CardController implements GlobalController {
 
       // Get card for filename
       const card = await this.cardService.getCardById(cardId);
-      const fullName = `${card?.firstName || "contact"}_${
-        card?.lastName || "card"
-      }`;
+      const fullName = `${card?.firstName || "contact"}_${card?.lastName || "card"
+        }`;
       const filename = `${fullName.replace(/\s+/g, "_")}.vcf`;
 
       // Set headers for VCF download
@@ -1416,11 +1424,11 @@ class CardController implements GlobalController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> => {};
+  ): Promise<void> => { };
   private acceptConnectionRequest = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> => {};
+  ): Promise<void> => { };
 }
 export default CardController;

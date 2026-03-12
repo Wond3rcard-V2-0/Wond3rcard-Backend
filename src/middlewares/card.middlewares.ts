@@ -15,7 +15,7 @@ export const canCreateCardMiddleware = async (
     }
 
     if (user.userTier.plan === UserTiers.Basic) {
-      const userCards = await cardModel.find({ createdBy: user.id });
+      const userCards = await cardModel.find({ ownerId: user.id });
 
       if (userCards.length >= 1) {
         throw new HttpException(
