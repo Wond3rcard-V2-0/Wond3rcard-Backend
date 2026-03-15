@@ -819,17 +819,10 @@ class CardController implements GlobalController {
     try {
       const uid = req.user.id;
       const cards = await this.cardService.getAllUserCards(uid);
-      if (cards.length === 0) {
-        res.status(404).json({
-          statusCode: 404,
-          status: "failed",
-          message: "You don't have any cards",
-        });
-      }
       res.status(200).json({
         statusCode: 200,
         status: "success",
-        message: "Cards retrieved successfully",
+        message: cards.length > 0 ? "Cards retrieved successfully" : "You don't have any cards",
         payload: { cards },
       });
     } catch (error) {
