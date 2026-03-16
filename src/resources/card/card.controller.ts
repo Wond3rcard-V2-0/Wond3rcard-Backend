@@ -48,6 +48,59 @@ class CardController implements GlobalController {
 
     /**
      * @openapi
+     * /api/cards/card-status:
+     *   get:
+     *     tags: [cards]
+     *     summary: Get the authenticated user's card creation status
+     *     description: Returns the user's current card count, maximum allowed cards for their subscription plan, remaining slots, and whether they can create a new card.
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Card status retrieved
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 statusCode:
+     *                   type: number
+     *                   example: 200
+     *                 status:
+     *                   type: string
+     *                   example: "success"
+     *                 message:
+     *                   type: string
+     *                   example: "Card status retrieved"
+     *                 payload:
+     *                   type: object
+     *                   properties:
+     *                     currentPlan:
+     *                       type: string
+     *                       example: "basic"
+     *                     cardCount:
+     *                       type: number
+     *                       example: 2
+     *                     maxCards:
+     *                       type: number
+     *                       description: Maximum cards allowed. -1 means unlimited.
+     *                       example: 3
+     *                     remainingSlots:
+     *                       type: number
+     *                       description: How many more cards can be created. -1 means unlimited.
+     *                       example: 1
+     *                     canCreateCard:
+     *                       type: boolean
+     *                       example: true
+     */
+    this.router.get(
+      `${this.path}/card-status`,
+      authenticatedMiddleware,
+      this.getCardStatus
+    );
+
+    /**
+     * @openapi
      * /api/cards/create:
      *   put:
      *     tags: [cards]
@@ -824,6 +877,25 @@ class CardController implements GlobalController {
         status: "success",
         message: cards.length > 0 ? "Cards retrieved successfully" : "You don't have any cards",
         payload: { cards },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  private getCardStatus = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const user = req.user;
+      const status = await this.cardService.getCardStatus(user);
+      res.status(200).json({
+        statusCode: 200,
+        status: "success",
+        message: "Card status retrieved",
+        payload: status,
       });
     } catch (error) {
       next(error);

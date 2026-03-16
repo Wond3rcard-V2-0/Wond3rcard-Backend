@@ -10,7 +10,9 @@ import {
   OrgRole,
 } from "../organization/organization.protocol";
 import userModel from "../user/user.model";
-import { User } from "../user/user.protocol";
+import { User, UserTiers } from "../user/user.protocol";
+import tierModel from "../admin/subscriptionTier/tier.model";
+import { CARD_LIMITS } from "../../config/card-limits.config";
 import { cardDefaultData } from "./card.data";
 import cardModel from "./card.model";
 import {
@@ -1402,6 +1404,46 @@ class CardService {
       },
     });
   };
+
+  /**
+   * Returns the user's card status including current count,
+   * max allowed cards for their plan, and remaining slots.
+   */
+  public async getCardStatus(user: User): Promise<{
+    currentPlan: string;
+    cardCount: number;
+    maxCards: number;
+    remainingSlots: number;
+    canCreateCard: boolean;
+  }> {
+    const plan: UserTiers = user.userTier.plan as UserTiers;
+
+    // Resolve card limit: Tier DB record > fallback config
+    let maxCards: number = CARD_LIMITS[plan] ?? CARD_LIMITS[UserTiers.Basic];
+
+    try {
+      const tier = await tierModel.findOne({ name: plan }).lean();
+      if (tier && typeof tier.maxCards === "number") {
+        maxCards = tier.maxCards;
+      }
+    } catch {
+      // Fall back to config constant
+    }
+
+    const cardCount = await cardModel.countDocuments({ ownerId: user.id });
+
+    const isUnlimited = !isFinite(maxCards);
+    const remainingSlots = isUnlimited ? -1 : Math.max(0, maxCards - cardCount);
+    const canCreateCard = isUnlimited || cardCount < maxCards;
+
+    return {
+      currentPlan: plan,
+      cardCount,
+      maxCards: isUnlimited ? -1 : maxCards, // -1 signals unlimited to the frontend
+      remainingSlots,
+      canCreateCard,
+    };
+  }
 }
 
 export default CardService;

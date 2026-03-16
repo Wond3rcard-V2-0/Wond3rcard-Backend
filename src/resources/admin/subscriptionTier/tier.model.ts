@@ -22,6 +22,7 @@ export interface ITier extends Document {
   trialPeriod: number;
   autoRenew: boolean;
   features: string[];
+  maxCards: number;
 }
 
 const BillingCycleSchema = new Schema({
@@ -49,6 +50,7 @@ const TierSchema = new Schema<ITier>(
     trialPeriod: { type: Number, required: true },
     autoRenew: { type: Boolean, required: true },
     features: { type: [String], required: true },
+    maxCards: { type: Number, required: true, default: 3 },
   },
   { timestamps: true }
 );
