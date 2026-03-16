@@ -42,6 +42,10 @@ class CardService {
     cardVideo?: Express.Multer.File
   ): Promise<Card> {
     try {
+      if (typeof data.cardName === 'string') {
+        data.cardName = data.cardName.trim();
+      }
+      
       if (data.cardName) {
         const existingCard = await cardModel.findOne({
           ownerId: user.id,
@@ -300,6 +304,10 @@ class CardService {
 
       await this.#validateOrganizationRole(org, creatorMember, OrgRole.Lead);
 
+      if (typeof data.cardName === 'string') {
+        data.cardName = data.cardName.trim();
+      }
+
       if (data.cardName) {
         const existingCard = await cardModel.findOne({
           ownerId: ownerId,
@@ -381,6 +389,10 @@ class CardService {
       const existingCard = await cardModel.findById(id);
       if (!existingCard) {
         throw new HttpException(404, "not found", "Card not found");
+      }
+
+      if (typeof data.cardName === 'string') {
+        data.cardName = data.cardName.trim();
       }
 
       // If the card name is being changed, ensure the new name is not already in use by this user
@@ -748,6 +760,10 @@ class CardService {
           "Permission Denied",
           "Only users with the role of Lead or Moderator can update organizational cards"
         );
+      }
+
+      if (typeof data.cardName === 'string') {
+        data.cardName = data.cardName.trim();
       }
 
       if (
