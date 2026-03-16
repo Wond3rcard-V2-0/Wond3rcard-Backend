@@ -42,6 +42,21 @@ class CardService {
     cardVideo?: Express.Multer.File
   ): Promise<Card> {
     try {
+      if (data.cardName) {
+        const existingCard = await cardModel.findOne({
+          ownerId: user.id,
+          cardName: { $regex: new RegExp(`^${data.cardName}$`, "i") }
+        });
+
+        if (existingCard) {
+          throw new HttpException(
+            409,
+            "duplicate_card_name",
+            "A card with this name already exists on your account."
+          );
+        }
+      }
+
       // Parse social media links - now accepts social media IDs in multiple formats
       let socialMediaLinks: CardSocialMediaLink[] = [];
       if (data.socialMediaLinks) {
@@ -285,6 +300,21 @@ class CardService {
 
       await this.#validateOrganizationRole(org, creatorMember, OrgRole.Lead);
 
+      if (data.cardName) {
+        const existingCard = await cardModel.findOne({
+          ownerId: ownerId,
+          cardName: { $regex: new RegExp(`^${data.cardName}$`, "i") }
+        });
+
+        if (existingCard) {
+          throw new HttpException(
+            409,
+            "duplicate_card_name",
+            "A card with this name already exists on your account."
+          );
+        }
+      }
+
       const cardData: Partial<Card> = {
         ...cardDefaultData,
         ...data,
@@ -351,6 +381,26 @@ class CardService {
       const existingCard = await cardModel.findById(id);
       if (!existingCard) {
         throw new HttpException(404, "not found", "Card not found");
+      }
+
+      // If the card name is being changed, ensure the new name is not already in use by this user
+      if (
+        data.cardName &&
+        data.cardName.toLowerCase() !== existingCard.cardName.toLowerCase()
+      ) {
+        const nameConflict = await cardModel.findOne({
+          ownerId: existingCard.ownerId,
+          _id: { $ne: id }, // Exclude the current card
+          cardName: { $regex: new RegExp(`^${data.cardName}$`, "i") }
+        });
+
+        if (nameConflict) {
+          throw new HttpException(
+            409,
+            "duplicate_card_name",
+            "A card with this name already exists on your account."
+          );
+        }
       }
 
       // Prepare update data
@@ -698,6 +748,25 @@ class CardService {
           "Permission Denied",
           "Only users with the role of Lead or Moderator can update organizational cards"
         );
+      }
+
+      if (
+        data.cardName &&
+        data.cardName.toLowerCase() !== card.cardName.toLowerCase()
+      ) {
+        const nameConflict = await cardModel.findOne({
+          ownerId: card.ownerId,
+          _id: { $ne: cardId },
+          cardName: { $regex: new RegExp(`^${data.cardName}$`, "i") },
+        });
+
+        if (nameConflict) {
+          throw new HttpException(
+            409,
+            "duplicate_card_name",
+            "A card with this name already exists on this account."
+          );
+        }
       }
 
       const updatedCard = await cardModel.findByIdAndUpdate(cardId, data, {
