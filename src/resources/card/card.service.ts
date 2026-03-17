@@ -441,9 +441,9 @@ class CardService {
         updateData.contactInfo = {
           ...existingCard.contactInfo,
           ...data.contactInfo,
-          // Only update addresses if explicitly provided
-          addresses:
-            data.contactInfo.addresses || existingCard.contactInfo.addresses,
+          // Only update address if explicitly provided
+          address:
+            data.contactInfo.address || existingCard.contactInfo.address,
           // Only update emailType if explicitly provided
           emailType:
             data.contactInfo.emailType || existingCard.contactInfo.emailType,

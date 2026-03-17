@@ -56,7 +56,7 @@ interface CardContactInfo {
   emailType?: string[];
   phone?: string;
   website?: string;
-  addresses: AddressInfo[];
+  address?: string;
 }
 
 interface CardOrganizationInfo {
@@ -91,7 +91,6 @@ export interface Card extends Document {
   organizationInfo: CardOrganizationInfo;
   contactInfo: CardContactInfo;
   socialMediaLinks: CardSocialMediaLink[];
-  addressInfo: AddressInfo;
   cardName: string;
   prefix?: string;
   pronoun?: string;
@@ -117,7 +116,6 @@ interface UpdateCardInput extends Partial<Card> {
 }
 
 export {
-  AddressInfo,
   CardCatelog,
   CardContactInfo,
   CardSocialMediaLink,

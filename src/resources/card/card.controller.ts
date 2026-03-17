@@ -7,7 +7,6 @@ import GlobalController from "../../protocols/global.controller";
 import { uploadCatelogueMiddleware } from "../../middlewares/uploaders/uploadCatalogueImages";
 import { uploadCardMediaMiddleware } from "../../middlewares/uploaders/uploadCardMedia";
 import {
-  AddressInfo,
   CardCatelog,
   CardContactInfo,
   CardSocialMediaLink,
@@ -794,35 +793,12 @@ class CardController implements GlobalController {
         secondaryColor: req.body.secondaryColor || "#000000",
       };
 
-      let cardAddresses: AddressInfo[] = [];
-      if (req.body.addresses) {
-        try {
-          const parsedLinks = JSON.parse(req.body.addresses.toString());
-
-          cardAddresses = parsedLinks.map((address: any) => ({
-            latitude: address.latitude,
-            longitude: address.longitude,
-            country: address.country,
-            state: address.state,
-            city: address.city,
-            label: address.label,
-            street: address.street,
-          }));
-        } catch (error) {
-          throw new HttpException(
-            422,
-            "invalid",
-            `'Invalid social media links format'`
-          );
-        }
-      }
-
       const contactInfo: CardContactInfo = {
         email: req.body.email,
         emailType: req.body.emailType,
         phone: req.body.phone,
         website: req.body.website,
-        addresses: cardAddresses || [],
+        address: req.body.address || req.body["contactInfo[address]"],
       };
 
       const card = await this.cardService.createCard(
@@ -915,6 +891,7 @@ class CardController implements GlobalController {
       const card = await this.cardService.getCardById(cardId);
       if (!card) {
         res.status(404).json({ message: "Card not found" });
+        return;
       }
       res.json(card);
     } catch (error) {
@@ -944,17 +921,8 @@ class CardController implements GlobalController {
         website: req.body.website || req.body["contactInfo[website]"],
         emailType:
           req.body.emailType || req.body["contactInfo[emailType]"] || [],
-        addresses: [],
+        address: req.body.address || req.body["contactInfo[address]"],
       };
-
-      // Handle addresses if provided
-      if (req.body.addresses) {
-        try {
-          contactInfo.addresses = JSON.parse(req.body.addresses.toString());
-        } catch (error) {
-          throw new HttpException(422, "invalid", "Invalid addresses format");
-        }
-      }
 
       // Handle card style
       const cardStyle: CardStyle = {
@@ -1013,6 +981,7 @@ class CardController implements GlobalController {
       const card = await this.cardService.updateOrgCard(user, cardId, req.body);
       if (!card) {
         res.status(404).json({ message: "Card not found" });
+        return;
       }
       res.json(card);
     } catch (error) {
@@ -1444,6 +1413,7 @@ class CardController implements GlobalController {
       const card = await this.cardService.getCardById(cardId);
       if (!card) {
         res.status(404).json({ message: "Card not found" });
+        return;
       }
       res.json({ card });
     } catch (error) {

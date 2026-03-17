@@ -103,13 +103,14 @@ class App {
       message: `Too many request from IP. try again after 15min`,
     });
 
+    // TEMPORARILY DISABLED FOR TESTING
     this.express.use(limiter);
 
     this.express.get("/", (req, res) => {
-      figlet("Wond3r Card", { font: "Slant" }, (err, data) => {
+      figlet("Wond3rCard", { font: "Slant" }, (err, data) => {
         if (err) {
           console.error("Error generating ASCII art:", err);
-          const message = `Welcome to Wond3r Card! 🎉✨
+          const message = `Welcome to Wond3rCard! 🎉✨
             Explore our APIs and create magic! 🪄💳
             Documentation: https://example.com/docs 📚🌐`;
           res.send(message.trim());
