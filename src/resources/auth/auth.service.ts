@@ -91,7 +91,7 @@ class AuthService {
         coverUrl: coverUrl,
       });
 
-      const otp = await this.otpService.saveOtp(user.id);
+      const { otp } = await this.otpService.saveOtp(user.id);
 
       const emailData = {
         userName: firstName,
@@ -247,7 +247,12 @@ class AuthService {
     try {
       //
       const uid = user.id;
-      const otp = await this.otpService.saveOtp(uid);
+      const { otp, isNew } = await this.otpService.saveOtp(uid);
+
+      if (!isNew) {
+        console.log(`[sendVerificationOTP] Reusing recent OTP for ${uid}. Skipping email send.`);
+        return;
+      }
 
       const emailData = {
         userName: firstName,
@@ -292,7 +297,12 @@ class AuthService {
         return error;
       }
       //
-      const otp = await this.otpService.saveOtp(uid);
+      const { otp, isNew } = await this.otpService.saveOtp(uid);
+
+      if (!isNew) {
+        console.log(`[sendAccountVerificationOTP] Reusing recent OTP for ${email}. Skipping email send.`);
+        return;
+      }
 
       const emailData = {
         userName: profile.firstname,
@@ -333,7 +343,12 @@ class AuthService {
         throw new HttpException(404, "not_found", `profile not found`);
       }
 
-      const otp = await this.otpService.saveOtp(uid);
+      const { otp, isNew } = await this.otpService.saveOtp(uid);
+
+      if (!isNew) {
+        console.log(`[forgotPassword] Reusing recent OTP for ${email}. Skipping email send.`);
+        return;
+      }
 
       const NODE_ENV = process.env.NODE_ENV;
       const liveUrl = "https://wond3rcard-backend-rgmx.onrender.com/api/";
@@ -535,7 +550,12 @@ class AuthService {
       const uid = user.id;
       const profile = await profileModel.findOne({ uid });
 
-      const otp = await this.otpService.saveOtp(uid);
+      const { otp, isNew } = await this.otpService.saveOtp(uid);
+
+      if (!isNew) {
+        console.log(`[request2FA] Reusing recent OTP for ${user.email}. Skipping email send.`);
+        return;
+      }
 
       const emailData = {
         name: profile.firstname,
@@ -675,24 +695,27 @@ class AuthService {
 
   async #hasEnabled2FA(uid: string, optCode: string) {
     if (!optCode) {
-      const otp = await this.otpService.saveOtp(uid);
-      const profile = await this.profile.findOne({ uid: uid });
+      const { otp, isNew } = await this.otpService.saveOtp(uid);
 
-      const emailData = {
-        userName: profile.firstname,
-        otpCode: otp,
-        verifyLink: `https://yourapp.com/verify?token=${otp}`,
-      };
+      if (isNew) {
+        const profile = await this.profile.findOne({ uid: uid });
 
-      const template = MailTemplates.otpCode;
+        const emailData = {
+          userName: profile.firstname,
+          otpCode: otp,
+          verifyLink: `https://yourapp.com/verify?token=${otp}`,
+        };
 
-      await this.mailer.sendMail(
-        profile.email,
-        "2FA OTP Code",
-        template,
-        "Verification",
-        emailData,
-      );
+        const template = MailTemplates.otpCode;
+
+        await this.mailer.sendMail(
+          profile.email,
+          "2FA OTP Code",
+          template,
+          "Verification",
+          emailData,
+        );
+      }
 
       throw new HttpException(
         400,
